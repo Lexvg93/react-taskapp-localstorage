@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState} from 'react'
+import "./App.css";
 
 function App() {
+
+  const [newTaskName, setNewTaskName]= useState()
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    localStorage.setItem('tasks', newTaskName)
+    setNewTaskName('')
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter a new Task"
+          value={newTaskName}
+          onChange={(e) => setNewTaskName(e.target.value)}
+        />
+        <button onClick={() => alert(newTaskName)}>Save Task</button>
+      </form>
     </div>
   );
 }
 
 export default App;
+
+https://www.youtube.com/watch?v=sjrK6RA65eQ tiempo 16:50
