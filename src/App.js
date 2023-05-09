@@ -1,29 +1,43 @@
-import {useState} from 'react'
+import { useState, useEffect } from "react";
 import "./App.css";
-
+import { TaskCreator } from "./components/TaskCreator";
+import {TaskTable} from "./components/TaskTable";
 function App() {
+  const [tasksItems, setTasksItems] = useState([
+    
+  ]);
 
-  const [newTaskName, setNewTaskName]= useState()
-  const handleSubmit = (e)=>{
-    e.preventDefault();
-    localStorage.setItem('tasks', newTaskName)
-    setNewTaskName('')
+  function createNewTask(taskName) {
+    if (!tasksItems.find((task) => task.name === taskName)) {
+      setTasksItems([...tasksItems, { name: taskName, done: false }]);
+    }
   }
+
+  const toggleTask = (task) =>{
+    setTasksItems(
+      tasksItems.map((t) => ())
+    )
+  }
+  
+  useEffect(()=>{
+    let data = localStorage.getItem('tasks')
+    if(data){
+      setTasksItems(JSON.parse(data))
+    }
+  },[ ])
+
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasksItems)); // es para guardar un arreglo en localstorage
+  }, [tasksItems]);
+
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Enter a new Task"
-          value={newTaskName}
-          onChange={(e) => setNewTaskName(e.target.value)}
-        />
-        <button onClick={() => alert(newTaskName)}>Save Task</button>
-      </form>
+      <TaskCreator createNewTask={createNewTask} />
+      <TaskTable tasks ={tasksItems}/>
     </div>
   );
 }
 
 export default App;
-
-https://www.youtube.com/watch?v=sjrK6RA65eQ tiempo 16:50
+https://www.youtube.com/watch?v=sjrK6RA65eQ tiempo 59:15
