@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { TaskCreator } from "./components/TaskCreator";
-import {TaskTable} from "./components/TaskTable";
+import { TaskTable } from "./components/TaskTable";
+import { VisibilityControl } from "./components/VisibilityControl";
+import { Container } from "./components/Container";
 function App() {
   const [tasksItems, setTasksItems] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
@@ -12,38 +14,49 @@ function App() {
     }
   }
 
-  const toggleTask = (task) =>{
+  const toggleTask = (task) => {
     setTasksItems(
-      tasksItems.map((t) => (t.name == task.name ? {...t, done: !t.done} : t))
-    )
-  }
-  
-  useEffect(()=>{
-    let data = localStorage.getItem('tasks')
-    if(data){
-      setTasksItems(JSON.parse(data))
-    }
-  },[ ])
+      tasksItems.map((t) =>
+        t.name === task.name ? { ...t, done: !t.done } : t
+      )
+    );
+  };
 
+  useEffect(() => {
+    let data = localStorage.getItem("tasks");
+    if (data) {
+      setTasksItems(JSON.parse(data));
+    }
+  }, []);
+
+  const cleanTasks = () => {
+    setTasksItems(tasksItems.filter((task) => !task.done));
+    setShowCompleted(false);
+  };
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasksItems)); // es para guardar un arreglo en localstorage
   }, [tasksItems]);
 
   return (
-    <div className="App">
-      <TaskCreator createNewTask={createNewTask} />
-      <TaskTable tasks ={tasksItems} toggleTask ={toggleTask}/>
-      <div>
-        <input type="checkbox" onChange={e => setShowCompleted(!showCompleted)}/> <label>Show Tasks Done</label>
-      </div>
-      {
-        showCompleted === true && (
-          <TaskTable tasks ={tasksItems} toggleTask ={toggleTask} showCompleted = {showCompleted}/>
-        )
-      }
-      
-    </div>
+    <main className="bg-dark vh-100 text-white">
+      <Container>
+        <TaskCreator createNewTask={createNewTask} />
+        <TaskTable tasks={tasksItems} toggleTask={toggleTask} />
+        <VisibilityControl
+          isChecked={showCompleted}
+          setShowCompleted={(checked) => setShowCompleted(checked)}
+          cleanTasks={cleanTasks}
+        />
+        {showCompleted === true && (
+          <TaskTable
+            tasks={tasksItems}
+            toggleTask={toggleTask}
+            showCompleted={showCompleted}
+          />
+        )}
+      </Container>
+    </main>
   );
 }
 
